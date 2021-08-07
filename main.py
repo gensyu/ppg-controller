@@ -38,11 +38,11 @@ class Connection(QtCore.QObject):
     
     @QtCore.Slot(str)
     def set_target(self, str):
-        print(str)
+        self.target = str
 
     @QtCore.Slot(str, int, "QVariantList")
     def write_value(self, target, period, ch_param):
-        if target == "": return
+        if target == "": return []
         self.ser.port = target
         self.ser.open()
         senddata = [period] + ch_param
@@ -60,7 +60,7 @@ class Connection(QtCore.QObject):
 
     @QtCore.Slot(str, result = "QVariantList")
     def read_value(self, target):
-        if target == "": return
+        if target == "": return []
         period = 0
         ch_param = []
         self.ser.port = self.target

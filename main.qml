@@ -48,6 +48,7 @@ ApplicationWindow {
     function get_fpga_param() {
         connect.set_target(comboBox_comlist.currentText)
         let data = connect.read_value(comboBox_comlist.currentText)
+        if (data.length == 0) return;
         let period = data[0]
         let ch_pram = data[1]
         spinBox_period.value = period
