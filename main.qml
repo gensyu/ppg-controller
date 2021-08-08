@@ -27,20 +27,20 @@ ApplicationWindow {
     function send_pulse_param() {
         connect.set_target(comboBox_comlist.currentText)
         let period = spinBox_period.value
-        let ch1_delay = spinBox_ch1_delay.value
-        let ch1_width = spinBox_ch1_width.value
-        let ch2_delay = spinBox_ch2_delay.value
-        let ch2_width = spinBox_ch2_width.value
-        let ch3_delay = spinBox_ch3_delay.value
-        let ch3_width = spinBox_ch3_width.value
-        let ch4_delay = spinBox_ch4_delay.value
-        let ch4_width = spinBox_ch4_width.value
+        let ch1_rise = spinBox_ch1_delay.value
+        let ch1_fall = spinBox_ch1_width.value + spinBox_ch1_delay.value
+        let ch2_rise = spinBox_ch2_delay.value
+        let ch2_fall = spinBox_ch2_width.value + spinBox_ch2_delay.value
+        let ch3_rise = spinBox_ch3_delay.value
+        let ch3_fall = spinBox_ch3_width.value + spinBox_ch3_delay.value
+        let ch4_rise = spinBox_ch4_delay.value
+        let ch4_fall = spinBox_ch4_width.value + spinBox_ch4_delay.value
 
         var ch_pram =  [
-                ch1_width, ch1_delay,
-                ch2_width, ch2_delay,
-                ch3_width, ch3_delay,
-                ch4_width, ch4_delay,
+                ch1_rise, ch1_fall,
+                ch2_rise, ch2_fall,
+                ch3_rise, ch3_fall,
+                ch4_rise, ch4_fall,
             ]
         connect.write_value(comboBox_comlist.currentText, period, ch_pram);
     }
@@ -52,14 +52,14 @@ ApplicationWindow {
         let period = data[0]
         let ch_pram = data[1]
         spinBox_period.value = period
-        spinBox_ch1_width.value = ch_pram[0]
-        spinBox_ch1_delay.value = ch_pram[1]
-        spinBox_ch2_width.value = ch_pram[2]
-        spinBox_ch2_delay.value = ch_pram[3]
-        spinBox_ch3_width.value = ch_pram[4]
-        spinBox_ch3_delay.value = ch_pram[5]
-        spinBox_ch4_width.value = ch_pram[6]
-        spinBox_ch4_delay.value = ch_pram[7]
+        spinBox_ch1_delay.value = ch_pram[0]
+        spinBox_ch1_width.value = ch_pram[1] - ch_pram[0]
+        spinBox_ch2_delay.value = ch_pram[2]
+        spinBox_ch2_width.value = ch_pram[3] - ch_pram[2]
+        spinBox_ch3_delay.value = ch_pram[4]
+        spinBox_ch3_width.value = ch_pram[5] - ch_pram[4]
+        spinBox_ch4_delay.value = ch_pram[6]
+        spinBox_ch4_width.value = ch_pram[7] - ch_pram[6]
     }
 
 
@@ -102,12 +102,13 @@ ApplicationWindow {
                 RowLayout  {
                     Label {
                         id: label_period
-                        text: qsTr("周期")
-                        font.pointSize: 14
+                        text: qsTr("周期[10ns]")
+                        font.pointSize: 13
                     }
                     SpinBox {
                         id: spinBox_period
-
+                        editable: true
+                        to: 65535
                     }
                 }
                 GroupBox {
@@ -119,20 +120,24 @@ ApplicationWindow {
                         Label {
                             id: label_ch1_width
 
-                            text: qsTr("Width")
+                            text: qsTr("Width[10ns]")
                             font.pointSize: 13
                         }
                         SpinBox {
                             id: spinBox_ch1_width
+                            editable: true
+                            to: 65535
                         }
                         Label {
                             id: label_ch1_delay
 
-                            text: qsTr("Delay")
+                            text: qsTr("Delay[10ns]")
                             font.pointSize: 13
                         }
                         SpinBox {
                             id: spinBox_ch1_delay
+                            editable: true
+                            to: 65535
                         }
                     }
                 }
@@ -145,20 +150,24 @@ ApplicationWindow {
                         Label {
                             id: label_ch2_width
 
-                            text: qsTr("Width")
+                            text: qsTr("Width[10ns]")
                             font.pointSize: 13
                         }
                         SpinBox {
                             id: spinBox_ch2_width
+                            editable: true
+                            to: 65535
                         }
                         Label {
                             id: label_ch2_delay
 
-                            text: qsTr("Delay")
+                            text: qsTr("Delay[10ns]")
                             font.pointSize: 13
                         }
                         SpinBox {
                             id: spinBox_ch2_delay
+                            editable: true
+                            to: 65535
                         }
                     }
                 }
@@ -171,20 +180,24 @@ ApplicationWindow {
                         Label {
                             id: label_ch3_width
 
-                            text: qsTr("Width")
+                            text: qsTr("Width[10ns]")
                             font.pointSize: 13
                         }
                         SpinBox {
                             id: spinBox_ch3_width
+                            editable: true
+                            to: 65535
                         }
                         Label {
                             id: label_ch3_delay
 
-                            text: qsTr("Delay")
+                            text: qsTr("Delay[10ns]")
                             font.pointSize: 13
                         }
                         SpinBox {
                             id: spinBox_ch3_delay
+                            editable: true
+                            to: 65535
                         }
                     }
                 }
@@ -197,27 +210,31 @@ ApplicationWindow {
                         Label {
                             id: label_ch4_width
 
-                            text: qsTr("Width")
+                            text: qsTr("Width[10ns]")
                             font.pointSize: 13
                         }
                         SpinBox {
                             id: spinBox_ch4_width
+                            editable: true
+                            to: 65535
                         }
                         Label {
                             id: label_ch4_delay
 
-                            text: qsTr("Delay")
+                            text: qsTr("Delay[10ns]")
                             font.pointSize: 13
                         }
                         SpinBox {
                             id: spinBox_ch4_delay
+                            editable: true
+                            to: 65535
                         }
                     }
                 }
             }
         }
 
-    }
+    }   
 }
 
 
