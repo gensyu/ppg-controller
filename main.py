@@ -67,10 +67,10 @@ class Connection(QtCore.QObject):
         self.ser.open()
         for i, addr in enumerate(range(0x00, 0x12, 0x02)):
             data = {
-                    "cmd": True,
-                    "addr": addr,
-                    "data": 0
-                }
+                "cmd": False,
+                "addr": addr,
+                "data": 0
+            }
             s_frame = MOSI_FORMAT.build(
                 data
             )
