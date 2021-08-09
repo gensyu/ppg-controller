@@ -25,7 +25,6 @@ ApplicationWindow {
 
 
     function send_pulse_param() {
-        connect.set_target(comboBox_comlist.currentText)
         let period = spinBox_period.value
         let ch1_rise = spinBox_ch1_delay.value
         let ch1_fall = spinBox_ch1_width.value + spinBox_ch1_delay.value
@@ -46,9 +45,8 @@ ApplicationWindow {
     }
 
     function get_fpga_param() {
-        connect.set_target(comboBox_comlist.currentText)
         let data = connect.read_value(comboBox_comlist.currentText)
-        if (data.length == 0) return;
+        if (data.length === 0) return;
         let period = data[0]
         let ch_pram = data[1]
         spinBox_period.value = period
@@ -62,10 +60,31 @@ ApplicationWindow {
         spinBox_ch4_width.value = ch_pram[7] - ch_pram[6]
     }
 
+    function toggle_connection() {
+        if (connection.state == "notConnect") {
+            connection.state = "Connected";
+            button_check.enabled = true
+            button_write.enabled = true
+            button_connection.text = "接断"
+            button_connection.Material.background= "#F44336"
+            connect.connect_target(comboBox_comlist.currentText)
+        } else {
+            connection.state = "notConnect";
+            button_check.enabled = false
+            button_write.enabled = false
+            button_connection.text = "接続"
+            button_connection.Material.background= "#2196F3"
+            connect.disconnect_target()
+        }
+    }
+
 
     ColumnLayout {
+        
         anchors.fill: parent
         RowLayout {
+            state: "notConnect"
+            id: connection
             Label {
                 text: qsTr("接続先")
             }
@@ -79,14 +98,23 @@ ApplicationWindow {
                 }
                
             }
+            Button {
+                id: button_connection
+                text: qsTr("接続")
+                onClicked: toggle_connection()
+                Material.foreground: "white"
+                Material.background: "#2196F3"
+            }
             
             Button {
                 id: button_check
                 text: qsTr("読み出し")
+                enabled: false
                 onClicked: get_fpga_param()
             }
             Button {
                 id: button_write
+                enabled: false
                 text: qsTr("書き込み")
                 onClicked: send_pulse_param()
             }
@@ -234,7 +262,14 @@ ApplicationWindow {
             }
         }
 
-    }   
+    }
+
 }
 
 
+
+/*##^##
+Designer {
+    D{i:0;autoSize:true;height:480;width:640}
+}
+##^##*/
