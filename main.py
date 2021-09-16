@@ -39,9 +39,11 @@ class Connection(QtCore.QObject):
     
     @QtCore.Slot(str)
     def connect_target(self, target):
-        self.ser = serial.Serial(target, baudrate=115200)
+        self.ser = serial.Serial(target, baudrate=19200)
         self.ser.flushInput()
         self.ser.flushOutput()
+        self.ser.write(b"\x00\x00\x00\x00\x00\x00")
+        time.sleep(200e-3)
 
     @QtCore.Slot()
     def disconnect_target(self):
@@ -53,6 +55,7 @@ class Connection(QtCore.QObject):
         self.ser.port = target
 
         senddata = [period] + ch_param
+        print("-- READ VALUE --")
         for i, addr in enumerate(range(0x00, 0x12, 0x02)):
             data = {
                     "cmd": True,
@@ -63,7 +66,9 @@ class Connection(QtCore.QObject):
                 data
             )
             self.ser.write(s_frame)
-            print(f"PC -> FPGA: {s_frame}")
+            print(f"PC -> FPGA:", " ".join([f"{i:02x}" for i in s_frame]))
+            time.sleep(10e-3)
+        print("-- END --")
 
 
     @QtCore.Slot(str, result = "QVariantList")
@@ -72,7 +77,7 @@ class Connection(QtCore.QObject):
         period = 0
         ch_param = []
 
-
+        print("-- READ VALUE --")
         for i, addr in enumerate(range(0x00, 0x12, 0x02)):
             data = {
                 "cmd": False,
@@ -83,14 +88,16 @@ class Connection(QtCore.QObject):
                 data
             )
             self.ser.write(s_frame)
-            print(f"PC -> FPGA: {s_frame}")
+            print(f"PC -> FPGA:", " ".join([f"{i:02x}" for i in s_frame]))
             r_frame = self.ser.read(6)
-            print(f"FPGA -> PC: {r_frame}")
+            print(f"FPGA -> PC:" , " ".join([f"{i:02x}" for i in r_frame]))
             recivedata = MISO_FORMAT.parse(r_frame)
             if i == 0:
                 period = recivedata["data"]
             else:
                 ch_param.append(recivedata["data"])
+            time.sleep(10e-3)
+        print("-- END --")
 
         return [period, ch_param]
 
