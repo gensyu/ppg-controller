@@ -55,7 +55,7 @@ class Connection(QtCore.QObject):
         self.ser.port = target
 
         senddata = [period] + ch_param
-        print("-- READ VALUE --")
+        print("-- WRITE VALUE --")
         for i, addr in enumerate(range(0x00, 0x12, 0x02)):
             data = {
                     "cmd": True,
@@ -68,6 +68,8 @@ class Connection(QtCore.QObject):
             self.ser.write(s_frame)
             print(f"PC -> FPGA:", " ".join([f"{i:02x}" for i in s_frame]))
             time.sleep(10e-3)
+        if self.ser.inWaiting() > 0:
+            self.ser.read_all()
         print("-- END --")
 
 
